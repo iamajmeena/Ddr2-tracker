@@ -4,7 +4,10 @@ const ASSETS = [
   './index.html',
   './manifest.json',
   './icon.svg',
-  'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap'
+  'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap',
+  'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js',
+  'https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js',
+  'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js'
 ];
 
 self.addEventListener('install', e => {

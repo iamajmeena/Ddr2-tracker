@@ -60,18 +60,6 @@
   .splash-credit { position:absolute; bottom:40px; font-size:11px; color:var(--text4); }
   .splash-credit a { color:var(--yellow); text-decoration:none; }
 
-  .sync-status {
-    position:fixed; top:12px; right:12px; z-index:50;
-    font-size:11px; color:var(--text3);
-    display:flex; align-items:center; gap:6px;
-    padding:6px 12px; border-radius:8px;
-    background:var(--card); border:1px solid var(--border);
-  }
-  .sync-dot { width:6px; height:6px; border-radius:50%; }
-  .sync-dot.online { background:var(--green); animation:pulse 1.5s infinite; }
-  .sync-dot.offline { background:var(--red); }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-
   .header {
     position:sticky; top:0; z-index:100;
     background:var(--bg);
@@ -248,7 +236,6 @@
     cursor:pointer; font-family:'JetBrains Mono',monospace;
   }
   .data-btn:active { background:var(--border); }
-  .data-btn:disabled { opacity:0.5; cursor:not-allowed; }
 
   .footer {
     text-align:center; padding:20px 16px 8px; font-size:11px; color:var(--text4);
@@ -272,42 +259,12 @@
   <div class="mono splash-credit">by <a href="https://instagram.com/iamajmeena" target="_blank">@iamajmeena</a></div>
 </div>
 
-<!-- Sync Status -->
-<div class="sync-status" id="syncStatus">
-  <div class="sync-dot online" id="syncDot"></div>
-  <span id="syncText">Syncing...</span>
-</div>
-
 <div id="app"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="importFile" accept=".json" style="display:none">
 
-<!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js';
-import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js';
-import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js';
-
-// Firebase Config
-const firebaseConfig = {
-  apiKey: "AIzaSyDiQ2hnyIDZVAVwk4CHz_zQSlJBwA1EkvE",
-  authDomain: "ddr2-tracker.firebaseapp.com",
-  databaseURL: "https://ddr2-tracker-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "ddr2-tracker",
-  storageBucket: "ddr2-tracker.appspot.com",
-  messagingSenderId: "1785976900067",
-  appId: "1:1785976900067:web:0fa2635650cc9d3163f226"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
-
-// Sign in anonymously
-signInAnonymously(auth).catch(e => console.log('Auth error (okay):', e));
-
-// ============ DATA & STATE ============
+<script>
+// ============ DATA ============
 const COURSE={parts:[{id:"p1",title:"THE ORIENTATION",subtitle:"Passive Learning",color:"#10B981",aperture:"f/16",role:"INTERN",modules:[{id:"M00",title:"Welcome & The Big Picture",difficulty:"EASY",lessons:[{id:"0.1",title:"Yeh course kiske liye hai & kya milega"},{id:"0.2",title:"Post-Production Pipeline — Shoot se Deliver tak"},{id:"0.3",title:"Why DaVinci Resolve — Industry ka sach"},{id:"0.4",title:"Free vs Studio — kya genuinely fark padta hai"}]},{id:"M01",title:"The Grand Tour of DaVinci Resolve",difficulty:"EASY",lessons:[{id:"1.1",title:"DaVinci Resolve pehli baar kholna"},{id:"1.2",title:"Media Page — The Store Room"},{id:"1.3",title:"Cut Page — The Rough Assembly Floor"},{id:"1.4",title:"Edit Page — The Director's Suite"},{id:"1.5",title:"Fusion Page — The VFX Department"},{id:"1.6",title:"Color Page — The DI Theatre"},{id:"1.7",title:"Fairlight Page — The Recording Studio"},{id:"1.8",title:"Deliver Page — Dispatch & Distribution"}]},{id:"M02",title:"Setting Up Like A Professional",difficulty:"EASY",lessons:[{id:"2.1",title:"Folder structure & organization"},{id:"2.2",title:"Project Settings — Resolution, Frame Rate, Color Science"},{id:"2.3",title:"Preferences — GPU, Cache, Memory optimization"},{id:"2.4",title:"Media Pool — Bins, Smart Bins, Power Bins"},{id:"2.5",title:"Proxies & Backup"},{id:"2.6",title:".dra Archive workflow"}]}]},{id:"p2",title:"THE TOOLKIT",subtitle:"Hands-On Learning",color:"#F59E0B",aperture:"f/5.6",role:"EDITOR",modules:[{id:"M03",title:"Cut Page Mastery",difficulty:"MED",lessons:[{id:"3.1",title:"Cut Page ka philosophy — speed ke liye bana"},{id:"3.2",title:"Source Tape workflow"},{id:"3.3",title:"Smart Insert, Append, Close-Up tool"},{id:"3.4",title:"Sync Bin & timeline shortcuts"},{id:"3.5",title:"Cut Page vs Edit Page — kab kya"}]},{id:"M04",title:"Edit Page Mastery",difficulty:"MED",lessons:[{id:"4.1",title:"Edit Page interface — har panel"},{id:"4.2",title:"Essential tools — Blade, Trim, Slip, Slide, Roll"},{id:"4.3",title:"Timeline tracks — management, locking, colors"},{id:"4.4",title:"Inspector Tab — deep dive"},{id:"4.5",title:"J-Cuts & L-Cuts — invisible editing ka raaz"},{id:"4.6",title:"Transitions — kab lagao, kab nahi"},{id:"4.7",title:"Speed Ramp, Optical Flow & Speed Warp AI"},{id:"4.8",title:"Dynamic Zoom & Reframing"},{id:"4.9",title:"Stabilization — shaky footage fix"},{id:"4.10",title:"Multicam editing workflow"},{id:"4.11",title:"Markers, Flags & Review"},{id:"4.12",title:"Compound Clips & Nested Timelines"}]},{id:"M05",title:"Storytelling & Pacing",difficulty:"MED",lessons:[{id:"5.1",title:"Cut kyun lagta hai — psychology of editing"},{id:"5.2",title:"Pacing — emotion ke saath rhythm"},{id:"5.3",title:"B-roll strategy & coverage thinking"},{id:"5.4",title:"3-act structure in short form content"},{id:"5.5",title:"Tension aur release — emotion create karna"}]},{id:"M06",title:"Titles, Effects & Fusion Basics",difficulty:"HARD",lessons:[{id:"6.1",title:"Text+ titles — deep dive"},{id:"6.2",title:"Titles library & templates"},{id:"6.3",title:"Fusion Page — node compositing philosophy"},{id:"6.4",title:"Lower third animation + Keyframing"},{id:"6.5",title:"Delta Keyer — green screen basics"},{id:"6.6",title:"Custom templates import & usage"}]},{id:"M07",title:"Fairlight Audio Mastery",difficulty:"MED",lessons:[{id:"7.1",title:"Fairlight overview & track types"},{id:"7.2",title:"EQ — dialogue clean karna"},{id:"7.3",title:"Compressor, Limiter, Gate"},{id:"7.4",title:"Noise Reduction & De-Esser"},{id:"7.5",title:"LUFS — platform standards"},{id:"7.6",title:"Music ducking & automation"},{id:"7.7",title:"Final audio mix checklist"}]},{id:"M08",title:"Color Science Foundation",difficulty:"HARD",lessons:[{id:"8.1",title:"Light aur color — human visual system"},{id:"8.2",title:"Color Spaces — Rec.709, DCI-P3, ACES, Rec.2020"},{id:"8.3",title:"Gamma curves — Log, Linear, Gamma 2.4"},{id:"8.4",title:"Camera color science — ARRI, Sony, Canon, BMD"},{id:"8.5",title:"LUTs — Technical vs Creative"}]},{id:"M09",title:"Color Page Mastery",difficulty:"HARD",lessons:[{id:"9.1",title:"Color Page interface"},{id:"9.2",title:"Scopes — Waveform, Parade, Vectorscope, Histogram"},{id:"9.3",title:"Node Tree philosophy"},{id:"9.4",title:"Primary correction — Lift/Gamma/Gain vs Log vs Curves"},{id:"9.5",title:"CST — Log footage handle karna"},{id:"9.6",title:"Secondary corrections — Qualifiers, HSL, Curves"},{id:"9.7",title:"Power Windows & tracking"},{id:"9.8",title:"Shot matching — consistent scene"},{id:"9.9",title:"Creative look — reference image se grade"},{id:"9.10",title:"Gallery Stills & PowerGrades"},{id:"9.11",title:"HDR basics — Dolby Vision / HDR10"},{id:"9.12",title:"ResolveFX — Grain, Glow, Beauty, Vignette"}]},{id:"M10",title:"Deliver Page Mastery",difficulty:"EASY",lessons:[{id:"10.1",title:"Codec choices — H.264, H.265, ProRes, DNxHR"},{id:"10.2",title:"Export presets — YouTube, Instagram, Cinema, Client"},{id:"10.3",title:"Subtitles, captions & render presets"},{id:"10.4",title:"Batch export & render queue"}]}]},{id:"p3",title:"THE REAL WORLD",subtitle:"Project-Based",color:"#EF4444",aperture:"f/1.4",role:"DIRECTOR",modules:[{id:"M11",title:"The Bridge — Director Ki Tarah",difficulty:"MED",lessons:[{id:"11.1",title:"Tool expert aur expert editor mein fark"},{id:"11.2",title:"Real project mein decision making"},{id:"11.3",title:"Director ki tarah sochna"}]},{id:"M12",title:"Project 1 : Music Video",difficulty:"MED",lessons:[{id:"12.1",title:"Music video editing ki soch"},{id:"12.2",title:"Media import & organization"},{id:"12.3",title:"Beat sync assembly"},{id:"12.4",title:"Fast cuts, energy, creative transitions"},{id:"12.5",title:"Creative color grade"},{id:"12.6",title:"Fusion VFX touches"},{id:"12.7",title:"Audio mix & final export"}]},{id:"M13",title:"Project 2 : Pre-Wedding Film",difficulty:"MED",lessons:[{id:"13.1",title:"Pre-wedding storytelling approach"},{id:"13.2",title:"Footage organization — large media"},{id:"13.3",title:"Romantic pacing — emotion edit"},{id:"13.4",title:"Color grade — warm, filmy, soft"},{id:"13.5",title:"Music selection + audio mix"},{id:"13.6",title:"Final client delivery"}]},{id:"M14",title:"Project 3 : Wedding Film",difficulty:"HARD",lessons:[{id:"14.1",title:"Wedding project scale"},{id:"14.2",title:"Large project workflow"},{id:"14.3",title:"Ceremony + reception structure"},{id:"14.4",title:"Highlight reel vs Full film"},{id:"14.5",title:"Client-ready color grade"},{id:"14.6",title:"Multiple export formats"}]},{id:"M15",title:"Project 4 : YouTube Video",difficulty:"MED",lessons:[{id:"15.1",title:"YouTube editing psychology"},{id:"15.2",title:"Talking head + B-roll workflow"},{id:"15.3",title:"Jump cuts, pacing, hook banana"},{id:"15.4",title:"Clean natural color — YouTube grade"},{id:"15.5",title:"Captions, chapters, thumbnail export"},{id:"15.6",title:"Upload ready final export"}]},{id:"M16",title:"Project 5 : Short Film",difficulty:"HARD",lessons:[{id:"16.1",title:"Script-based editing mindset"},{id:"16.2",title:"Dialogue scenes — pacing, performance"},{id:"16.3",title:"Continuity editing — invisible cuts"},{id:"16.4",title:"Sound design + Fairlight mix"},{id:"16.5",title:"Cinematic color — CST node workflow"},{id:"16.6",title:"XML / AAF / EDL Roundtrip"},{id:"16.7",title:"Festival / Cinema export"}]},{id:"M17",title:"The Professional Edge",difficulty:"MED",lessons:[{id:"17.1",title:"Client communication — brief & feedback"},{id:"17.2",title:"File delivery standards"},{id:"17.3",title:"Freelancer pricing"},{id:"17.4",title:"Apna personal LUT pack banana"},{id:"17.5",title:"Personal node tree — signature grade"},{id:"17.6",title:"Keyboard shortcuts & speed editing"}]}]}]};
 
 const STATUSES={pending:{label:"Pending",icon:"○",color:"#6B7280",bg:"#1F2937"},scripted:{label:"Scripted",icon:"✎",color:"#A78BFA",bg:"#2E1065"},recording:{label:"Recording",icon:"●",color:"#FBBF24",bg:"#422006"},recorded:{label:"Recorded",icon:"◉",color:"#34D399",bg:"#064E3B"},edited:{label:"Edited",icon:"✓",color:"#60A5FA",bg:"#1E3A5F"},published:{label:"Published",icon:"★",color:"#F472B6",bg:"#4A1942"}};
@@ -315,83 +272,14 @@ const DIFF_COLORS={EASY:"#10B981",MED:"#F59E0B",HARD:"#EF4444"};
 const DONE_STATES=["recorded","edited","published"];
 
 let state={statuses:{},notes:{},view:"overview",activeModule:null,filter:"all",modal:null};
-let firebaseReady=false;
-let isOnline=navigator.onLine;
 
-window.addEventListener('online', ()=>{ isOnline=true; updateSyncStatus(); });
-window.addEventListener('offline', ()=>{ isOnline=false; updateSyncStatus(); });
-
-function updateSyncStatus(){
-  const dot=document.getElementById('syncDot');
-  const text=document.getElementById('syncText');
-  if(isOnline){
-    dot.classList.remove('offline');
-    dot.classList.add('online');
-    text.textContent='Synced';
-  }else{
-    dot.classList.remove('online');
-    dot.classList.add('offline');
-    text.textContent='Offline';
-  }
+function loadState(){
+  try{state.statuses=JSON.parse(localStorage.getItem("ddr2-statuses")||"{}")}catch(e){state.statuses={}}
+  try{state.notes=JSON.parse(localStorage.getItem("ddr2-notes")||"{}")}catch(e){state.notes={}}
 }
+function saveStatuses(){localStorage.setItem("ddr2-statuses",JSON.stringify(state.statuses))}
+function saveNotes(){localStorage.setItem("ddr2-notes",JSON.stringify(state.notes))}
 
-// ============ FIREBASE SYNC ============
-async function loadFromFirebase(){
-  try{
-    const statusRef=ref(db,'tracker/statuses');
-    const notesRef=ref(db,'tracker/notes');
-    
-    const statusSnap=await get(statusRef);
-    const notesSnap=await get(notesRef);
-    
-    if(statusSnap.exists()) state.statuses=statusSnap.val()||{};
-    if(notesSnap.exists()) state.notes=notesSnap.val()||{};
-    
-    firebaseReady=true;
-    setupRealtimeListeners();
-    render();
-    updateSyncStatus();
-  }catch(e){
-    console.log('Firebase load error (using local):',e);
-    firebaseReady=true;
-    render();
-  }
-}
-
-function setupRealtimeListeners(){
-  try{
-    onValue(ref(db,'tracker/statuses'), (snap)=>{
-      state.statuses=snap.val()||{};
-      render();
-    });
-    onValue(ref(db,'tracker/notes'), (snap)=>{
-      state.notes=snap.val()||{};
-      render();
-    });
-  }catch(e){
-    console.log('Realtime listener error:',e);
-  }
-}
-
-function saveStatusesToFirebase(){
-  if(!firebaseReady||!isOnline) return;
-  try{
-    set(ref(db,'tracker/statuses'),state.statuses);
-  }catch(e){
-    console.log('Firebase save error:',e);
-  }
-}
-
-function saveNotesToFirebase(){
-  if(!firebaseReady||!isOnline) return;
-  try{
-    set(ref(db,'tracker/notes'),state.notes);
-  }catch(e){
-    console.log('Firebase save error:',e);
-  }
-}
-
-// ============ UI & RENDERING ============
 const allLessons=COURSE.parts.flatMap(p=>p.modules.flatMap(m=>m.lessons));
 const totalLessons=allLessons.length;
 function getStatus(id){return state.statuses[id]||"pending"}
@@ -456,31 +344,30 @@ function renderModal(){
   document.body.appendChild(ov);
 }
 
-// Global functions for UI
-window.switchView=(v)=>{state.view=v;state.activeModule=null;render();window.scrollTo(0,0)};
-window.setFilter=(f)=>{state.filter=f;render()};
-window.openModule=(id)=>{state.activeModule=id;state.view="modules";render();window.scrollTo(0,0)};
-window.closeModule=()=>{state.activeModule=null;render()};
-window.openStatusModal=(id)=>{state.modal={type:"status",lessonId:id};renderModal()};
-window.openNoteModal=(id,title)=>{state.modal={type:"note",lessonId:id,lessonTitle:title};renderModal()};
-window.closeModal=()=>{state.modal=null;document.querySelectorAll('.overlay').forEach(e=>e.remove())};
-window.setStatus=(id,st)=>{state.statuses[id]=st;saveStatusesToFirebase();closeModal();render();showToast(`${id} → ${STATUSES[st].label}`)};
-window.saveNote=(id)=>{const t=document.getElementById('noteText').value;if(t.trim()){state.notes[id]=t.trim()}else{delete state.notes[id]}saveNotesToFirebase();closeModal();render();showToast('Note saved')};
-window.bulkSet=(modId,st)=>{const f=findModule(modId);if(!f)return;f.mod.lessons.forEach(l=>state.statuses[l.id]=st);saveStatusesToFirebase();render();showToast(`${modId} → All ${STATUSES[st].label}`)};
-window.exportData=()=>{const d={statuses:state.statuses,notes:state.notes,exported:new Date().toISOString()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`DDR2-Tracker-${new Date().toISOString().slice(0,10)}.json`;a.click();showToast('Data exported')};
-window.importData=()=>{const file=document.getElementById('importFile').files[0];if(!file)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d.statuses){state.statuses=d.statuses;saveStatusesToFirebase()}if(d.notes){state.notes=d.notes;saveNotesToFirebase()}render();showToast('Data imported')}catch(err){showToast('Import failed')}};r.readAsText(file)};
-window.resetData=()=>{if(confirm('Sab data reset ho jayega. Sure ho?')){state.statuses={};state.notes={};saveStatusesToFirebase();saveNotesToFirebase();render();showToast('All data reset')}};
+function switchView(v){state.view=v;state.activeModule=null;render();window.scrollTo(0,0)}
+function setFilter(f){state.filter=f;render()}
+function openModule(id){state.activeModule=id;state.view="modules";render();window.scrollTo(0,0)}
+function closeModule(){state.activeModule=null;render()}
+function openStatusModal(id){state.modal={type:"status",lessonId:id};renderModal()}
+function openNoteModal(id,title){state.modal={type:"note",lessonId:id,lessonTitle:title};renderModal()}
+function closeModal(){state.modal=null;document.querySelectorAll('.overlay').forEach(e=>e.remove())}
+function setStatus(id,st){state.statuses[id]=st;saveStatuses();closeModal();render();showToast(`${id} → ${STATUSES[st].label}`)}
+function saveNote(id){const t=document.getElementById('noteText').value;if(t.trim()){state.notes[id]=t.trim()}else{delete state.notes[id]}saveNotes();closeModal();render();showToast('Note saved')}
+function bulkSet(modId,st){const f=findModule(modId);if(!f)return;f.mod.lessons.forEach(l=>state.statuses[l.id]=st);saveStatuses();render();showToast(`${modId} → All ${STATUSES[st].label}`)}
+function exportData(){const d={statuses:state.statuses,notes:state.notes,exported:new Date().toISOString()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`DDR2-Tracker-${new Date().toISOString().slice(0,10)}.json`;a.click();showToast('Data exported')}
+function importData(){const file=document.getElementById('importFile').files[0];if(!file)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d.statuses){state.statuses=d.statuses;saveStatuses()}if(d.notes){state.notes=d.notes;saveNotes()}render();showToast('Data imported')}catch(err){showToast('Import failed')}};r.readAsText(file)}
+function resetData(){if(confirm('Sab data reset ho jayega. Sure ho?')){state.statuses={};state.notes={};saveStatuses();saveNotes();render();showToast('All data reset')}}
 
-document.getElementById('importFile').addEventListener('change',window.importData);
+document.getElementById('importFile').addEventListener('change',importData);
+loadState();
 
-// Initialize
+// Splash screen
 setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>document.getElementById('splash').remove(),500)},1200);
 
-loadFromFirebase();
+render();
 
 // Register Service Worker for PWA
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
-
 </script>
 </body>
 </html>
